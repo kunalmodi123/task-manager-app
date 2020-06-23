@@ -6,7 +6,7 @@ const userRouter = require("./routers/user");
 const taskRouter = require("./routers/task");
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 
 // app.use((req, res, next) => {
 //   // middleware
@@ -44,14 +44,52 @@ app.listen(port, () => {
 const Task = require("./models/task");
 const User = require("./models/user");
 
-const main = async () => {
-  // const task = await Task.findById("5eed30971a2ebb21904a77a3");
-  // await task.populate("owner").execPopulate();
-  // console.log(task.owner);
+// const main = async () => {
+//   // const task = await Task.findById("5eed30971a2ebb21904a77a3");
+//   // await task.populate("owner").execPopulate();
+//   // console.log(task.owner);
 
-  const user = await User.findById("5eec0c24ce1458740cf163e9");
-  await user.populate("tasks").execPopulate();
-  console.log(user.tasks);
-};
+//   const user = await User.findById("5eec0c24ce1458740cf163e9");
+//   await user.populate("tasks").execPopulate();
+//   console.log(user.tasks);
+// };
 
-main();
+// main();
+
+// //=======================================================================================
+// // FILE UPLOAD
+
+// const multer = require("multer");
+// const upload = multer({
+//   dest: "images",
+//   limits: {
+//     fileSize: 1000000, // size in bytes
+//   },
+//   fileFilter(req, file, cb) {
+//     // cb is callback
+//     // if (!file.originalname.endsWith(".pdf")) {
+//     //   return cb(new Error("Please upload a PDF"));
+//     // }
+
+//     if (!file.originalname.match(/\.(doc|docx)$/)) {
+//       return cb(new Error("Please upload a word document"));
+//     }
+
+//     cb(undefined, true);
+//   },
+// });
+
+// // upload.single is a middleware
+// app.post(
+//   "/upload",
+//   upload.single("upload"),
+//   (req, res) => {
+//     res.send();
+//   },
+//   (error, req, res, next) => {
+//     res.status(400).send({ error: error.message });
+//   }
+// ); // the 2nd argument is setup only to handle errors. Now we will get more readable error
+// // rather than a whole HTML file as response
+
+// //===========================================================================================

@@ -18,13 +18,36 @@ router.post("/tasks", auth, async (req, res) => {
   }
 });
 
+// GET /tasks?completed=true or false --- filtering data
+// GET /tasks?limit=10&skip=10 ---  pagination of data
+// GET /tasks?sortBy=createdAt:asc or :desc
 router.get("/tasks", auth, async (req, res) => {
-  try {
-    const task = await Task.find({ owner: req.user._id });
-    // also alternatively,
-    // await req.user.populate("tasks").execPopulate();
+  const match = {};
+  const sort = {};
+  if (req.query.completed) {
+    match.completed = req.query.completed === "true";
+  } // done for filtering data according to query
 
-    res.send(task);
+  if (req.query.sortBy) {
+    const parts = req.query.sortBy.split(":");
+    sort[parts[0]] = parts[1] === "desc" ? -1 : 1;
+  }
+  try {
+    await req.user
+      .populate({
+        path: "tasks",
+        match,
+        options: {
+          limit: parseInt(req.query.limit), // for pagination
+          skip: parseInt(req.query.skip), // for pagination
+          sort,
+        },
+      })
+      .execPopulate(); // Here match is added because to filter out tasks according to the query string provided
+    // also alternatively
+    //const task = await Task.find({ owner: req.user._id });
+
+    res.send(req.user.tasks);
   } catch (e) {
     res.status(500).send();
   }
